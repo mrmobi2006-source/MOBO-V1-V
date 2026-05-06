@@ -163,7 +163,7 @@ if(strpos($message, "/banlist") === 0 and $userId == $config['adminID']){
 	  $getmember = explode("\n",$gettheuserfile);
 	  $getmem = count($getmember)-1;
 	  $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, 'https://api.telegram.org/bot'.$config['8701255967:AAEG87R8_d1hNJlohl1bNPMCLVuX65KrAG0'].'/sendDocument');
+    curl_setopt($ch, CURLOPT_URL, 'https://api.telegram.org/bot'.$config['botToken'].'/sendDocument');
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
     curl_setopt($ch, CURLOPT_POST, 1);
     $post = array(
