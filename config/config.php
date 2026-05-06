@@ -52,9 +52,9 @@ $config['timeZone'] =  "Asia/Kolkata";
 | Database to Store User Data
 |
 */
-$config['db']['hostname'] =  "localhost";
+$config['db']['hostname'] =  "mysql.railway.internal";
 $config['db']['username'] =  "root";
-$config['db']['password'] =  "";
+$config['db']['password'] =  "kIQlEvfOdXdntxPZZnGgRVRUfhjRfWNo";
 $config['db']['database'] =  "checkerbot";
 
 /*
