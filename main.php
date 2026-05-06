@@ -48,7 +48,7 @@ $messagesec",
 	'reply_to_message_id'=> $message_id,
     'reply_markup'=>json_encode(['inline_keyboard' => [
         [
-          ['text' => "💠 Created By 💠", 'url' => "t.me/iamNVN"]
+          ['text' => "💠 Created By 💠", 'url' => "t.me/xtt1x"]
         ],
         [
           ['text' => "💎 Source Code 💎", 'url' => "GitHub.com/iam-NVN/SDMN_CheckerBot"]
