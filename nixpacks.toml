@@ -1,2 +1,3 @@
 [variables]
     PHP_EXTENSIONS = "mysqli, curl, mbstring, json"
+    PHP_VERSION = "8.2"
