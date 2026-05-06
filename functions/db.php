@@ -6,28 +6,42 @@ include __DIR__."/../config/variables.php";
 include __DIR__."/../config/config.php";
 
 ///////////==[DB Connection]==///////////
-$conn = mysqli_connect($config['db']['hostname'],$config['db']['username'],$config['db']['password'],$config['db']['database']);
+$conn = mysqli_connect(
+    $config['db']['hostname'],
+    $config['db']['username'],
+    $config['db']['password'],
+    $config['db']['database'],
+    $config['db']['port']
+);
 
 if(!$conn){
-    bot('sendmessage',[
-        'chat_id'=>$config['adminID'],
-        'text'=>"<b>🛑 DB connection Failed!
-        
-        ".json_encode($config['db'])."</b>",
-        'parse_mode'=>'html'
-        
+    $error_msg = "DB connection Failed!\n\n".json_encode([
+        'host' => $config['db']['hostname'],
+        'port' => $config['db']['port'],
+        'error' => mysqli_connect_error()
     ]);
-
-    logsummary("<b>🛑 DB connection Failed!\n\n".json_encode($config['db'])."</b>");
+    
+    // Log error
+    error_log($error_msg, 3, '/tmp/bot_db_error.log');
+    
+    // Send notification to admin if possible
+    if(!empty($config['adminID'])) {
+        @bot('sendmessage',[
+            'chat_id'=>$config['adminID'],
+            'text'=>"<b>🛑 DB connection Failed!\n\n".$error_msg."</b>",
+            'parse_mode'=>'html'
+        ]);
+    }
 }
 
 ////////////////////////////////////////////
 
 function fetchUser($userID){
     global $conn;
+    $userID = mysqli_real_escape_string($conn, $userID);
     $dataf = mysqli_query($conn,"SELECT * FROM users WHERE userid='$userID'");
 
-    if(mysqli_num_rows($dataf) == 0){
+    if(!$dataf || mysqli_num_rows($dataf) == 0){
         return False;
     }
 
@@ -42,7 +56,7 @@ function isBanned($userID){
     global $message_id;
     $userData = fetchUser($userID);
 
-    if($userData['is_banned'] == "True"){
+    if($userData && $userData['is_banned'] == "True"){
         bot('sendmessage',[
             'chat_id'=>$chat_id,
             'text'=>"<b>Hehe Boi! Suck your Mum</b>",
@@ -62,7 +76,7 @@ function isMuted($userID){
     global $conn;
     $userData = fetchUser($userID);
 
-    if($userData['is_muted'] == "True"){
+    if($userData && $userData['is_muted'] == "True"){
         $muted_for = $userData['mute_timer']-time();
 
         if($muted_for >= 0){
@@ -90,7 +104,7 @@ function addUser($userID){
     $userData = fetchUser($userID);
 
     if(!$userData){
-        $addtodb = mysqli_query($conn,"INSERT INTO users (userid,registered_on,is_banned,is_muted,mute_timer,sk_key,total_checked,total_cvv,total_ccn) VALUES ('$userID','".time()."','False','False','0','0','0','0','0')");
+        $addtodb = mysqli_query($conn,"INSERT INTO users (userid,registered_on,is_banned,is_muted,mute_timer,sk_key,total_checked,total_cvv,total_ccn) VALUES ('$userID','".time()."','False','False','0','','0','0','0')");
         logsummary("<b>🛑 [LOG] New User - $userID</b>");
         return True;
     }else{
